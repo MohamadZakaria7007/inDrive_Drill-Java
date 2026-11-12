@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -21,7 +20,7 @@ import org.openqa.selenium.WebDriver;
  * parameter. On failure saves a screenshot + page source to target/failures/ before quitting.
  */
 public final class BrowserExtension
-        implements BeforeEachCallback, AfterTestExecutionCallback, AfterEachCallback, ParameterResolver {
+        implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
     private static final ExtensionContext.Namespace NAMESPACE =
             ExtensionContext.Namespace.create(BrowserExtension.class);
@@ -33,18 +32,21 @@ public final class BrowserExtension
         context.getStore(NAMESPACE).put(DRIVER, DriverFactory.create(Settings.get()));
     }
 
-    @Override
-    public void afterTestExecution(ExtensionContext context) {
-        WebDriver driver = driver(context);
-        if (driver != null && context.getExecutionException().isPresent()) {
-            saveFailureArtifacts(context, driver);
-        }
-    }
-
+    /**
+     * Capture lives here, not in afterTestExecution: JUnit skips that callback when a
+     * {@code @BeforeEach} fails (e.g. the page never loads), which is exactly when evidence matters.
+     */
     @Override
     public void afterEach(ExtensionContext context) {
         WebDriver driver = context.getStore(NAMESPACE).remove(DRIVER, WebDriver.class);
-        if (driver != null) {
+        if (driver == null) {
+            return;
+        }
+        try {
+            if (context.getExecutionException().isPresent()) {
+                saveFailureArtifacts(context, driver);
+            }
+        } finally {
             driver.quit();
         }
     }
