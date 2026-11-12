@@ -20,7 +20,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.WebDriver;
 
-/** User journeys on /category/power-tools (U1, U2, U4). Filter rules are proven in the API tests. */
+/** User journeys on /category/power-tools (U1, U2, U4, U7, U8). Filter rules are proven in the API tests. */
 @UiTest
 class PowerToolsListingTest {
 

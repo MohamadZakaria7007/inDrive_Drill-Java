@@ -20,7 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-/** Catalogue rules behind the Power Tools listing page, proven at API level (A1-A3). */
+/** Catalogue rules behind the Power Tools listing page, proven at API level (A1-A4). */
 class PowerToolsProductsApiTest extends ApiTestBase {
 
     private static final String POWER_TOOLS = "power-tools";
