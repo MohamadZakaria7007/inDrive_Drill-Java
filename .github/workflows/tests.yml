@@ -30,11 +30,14 @@ jobs:
           java-version: "21"
           cache: maven
 
-      - name: Smoke (fail fast)
-        run: mvn -B test -Dgroups=smoke
+      # API tests only: the shop's web host is behind Cloudflare bot protection, which serves
+      # GitHub-hosted runners a "Verify you are human" page instead of the app, so UI tests
+      # cannot run here. They run locally (mvn -B test -Dgroups=ui). See README > CI.
+      - name: API smoke (fail fast)
+        run: mvn -B test "-Dgroups=api & smoke"
 
-      - name: Full regression
-        run: mvn -B test
+      - name: API regression
+        run: mvn -B test -Dgroups=api
 
       - name: Upload reports and failure screenshots
         if: always()

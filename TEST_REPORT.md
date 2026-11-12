@@ -58,6 +58,14 @@ Raw JUnit XML: `target/surefire-reports/` (uploaded as the `test-report` artifac
   does not include subcategories. The UI works around it (checking the parent checks all children),
   but other API clients may be surprised.
 
+## CI (GitHub Actions)
+
+The UI tests cannot run on GitHub-hosted runners: Cloudflare serves them a "Verify you are human"
+page (title `Just a moment...`) instead of the shop, so `page-title` never appears. Evidence: the
+screenshot and page HTML saved by the failing UI test in run 43166829108 (Cloudflare Ray ID
+`a593675dfc47a153`). This is an environment constraint, not a test or app defect. CI therefore runs
+the API tests only; the UI suite runs locally.
+
 ## Not covered
 
 Product detail, cart, compare, login (out of agreed scope); sort by name/CO₂, pagination, category

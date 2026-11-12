@@ -28,6 +28,20 @@ No credentials are needed: the catalogue is public.
 Results: `target/surefire-reports/`; screenshot + HTML of any failed UI test: `target/failures/`.
 Latest run and the bug found: [TEST_REPORT.md](TEST_REPORT.md).
 
+## CI
+
+GitHub Actions ([tests.yml](.github/workflows/tests.yml)) runs the **API tests only**: API smoke
+first (fail fast), then the API regression, and uploads the reports.
+
+The UI tests are excluded on purpose. The shop's web host is behind Cloudflare bot protection, and
+GitHub-hosted runners get a "Verify you are human" page instead of the app (confirmed from the
+screenshot and page source the UI test saved in CI). The API host is not behind that protection.
+Getting past the check would mean evading the site's bot protection, so the UI suite runs locally
+instead: `mvn -B test -Dgroups=ui`.
+
+To bring UI tests back into CI: run the open-source Toolshop app inside the workflow (Docker) and
+point `UI_BASE_URL` / `API_BASE_URL` at it, or use a self-hosted runner the site does not challenge.
+
 ## What is covered
 
 | ID | Layer | Test | Class |
